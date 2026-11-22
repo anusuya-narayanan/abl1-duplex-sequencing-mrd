@@ -1,11 +1,9 @@
-# detecting a 1% ABL1 variant and measuring error suppression
+# Detection of a 1% ABL1 variant and measuring error suppression
 
-A dry-lab NGS project run in [Galaxy](https://usegalaxy.org). It reproduces the Galaxy Training Network tutorial [Calling very rare variants](https://training.galaxyproject.org/training-material/topics/variant-analysis/tutorials/dunovo/tutorial.html), then extends it with my own analysis. I compare duplex consensus (DCS) and single-strand consensus (SSCS) reads to measure how much background noise duplex sequencing removes, and where variant calling at low allele frequencies breaks down.
+This is a dry-lab NGS project run in [Galaxy](https://usegalaxy.org). It reproduces the Galaxy Training Network tutorial [Calling very rare variants](https://training.galaxyproject.org/training-material/topics/variant-analysis/tutorials/dunovo/tutorial.html), then extends it with my own analysis. I compare duplex consensus (DCS) and single-strand consensus (SSCS) reads to measure how much background noise duplex sequencing removes, and where variant calling at low allele frequencies breaks down.
 
 # Author and Motivation
-Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncology.
-
-(Add motivation)
+Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncology. My direct laboratory experience is centered on DNA-FISH and imaging-based cytogenomics. To build on this foundation, I am developing foundational NGS data-analysis skills through this Galaxy-based project, and I am eager to extend my experience in assay development and image analysis into NGS and multi-omics. 
 
 *Personal learning project using public data and open-source tools, done in my own time. Not affiliated with or endorsed by any employer.*
 
@@ -24,21 +22,23 @@ Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncolo
 | Reference | Human hg38, chr9 |
 | Galaxy server | usegalaxy.org (Galaxy Main) |
 
+The data is a deep, targeted sequencing run of the ABL1 gene region on chromosome 9, from Schmitt et al. (2015), SRA accession SRR1799908. Eery original DNA molecule carries a random barcode of 12bp tag, so reads can be traced back to the molecule and the strand they came from. Du Novo joins the two 12-letter tags into a 24-letter barcode, then uses the tag order to label each read
+
 ## Workflow
 
 ![Workflow](figures/workflow.png)
 
-1. **FastQC**: read quality check.
-2. **Du Novo: Make families**: split the 12 bp tag off each read, join the two tags into a 24 bp barcode, group reads by molecule and label each strand (ab or ba).
-3. **Du Novo: Correct barcodes**: merge barcodes that differ by sequencing errors (max 3 differences).
-4. **Du Novo: Align families**: multiple sequence alignment within each family (Kalign2).
-5. **Du Novo: Make consensus reads**: single-strand consensus per strand (min 3 reads, 70% agreement), then duplex consensus where both strands agree; disagreements become N.
-6. **Sequence Content Trimmer**: cut reads at runs of N (10 bp window, more than 2 non-ACGT bases); drop pairs shorter than 50 bp.
-7. **BWA-MEM**: map consensus reads to hg38.
-8. **BamLeftAlign**: standardise indel positions.
-9. **Naive Variant Caller**: count bases at each chr9 position (min mapping quality 20, min base quality 0, ploidy 1).
-10. **Variant Annotator**: per-position depth, major/minor allele, MAF and strand bias (coverage threshold 10).
-11. **Filter**: `c16 >= 0.01` (MAF at least 1%).
+1. **FastQC**: reads the FASTQ file and performs a quality check.
+2. **Du Novo: Make families**: split the 12 bp tag off each read, join the two tags into a 24 bp barcode, then group reads by molecule and label each strand as "ab" or "ba", to distinguish the top and bottom strand.
+3. **Correct barcodes**: finds barcodes that differ by only a few letters and are probably the same molecule, then merges them. Setting used: maximum differences 3
+4. **Align families**: runs a multiple sequence alignment (Kalign2) within each family, so that the same position lines up in the same column before voting.
+5. **Make consensus reads (SSCS and DSC)**: removes errors that hit only a few reads, such as most sequencer errors and late PCR errors. Single-strand consensus per strand (min 3 reads, 70% agreement); and duplex consensus where both strands disagree become N.
+6. **Sequence Content Trimmer**: removes reads with too many Ns. Setting used: 10 bp window, more than 2 non-ACGT bases; drop pairs shorter than 50 bp.
+7. **BWA-MEM**: map consensus reads to the reference human genome hg38. 
+8. **BamLeftAlign**: standardise indel positions, moves it to the leftmost possible position.
+9. **Naive Variant Caller**: count bases at each chr9 position. It is “naive” because it makes no assumption about how many copies of a chromosome a cell has. Setting used: min mapping quality 20, min base quality 0, ploidy 1.
+10. **Variant Annotator**: turns the VCF into a table with per-position depth, major/minor allele, MAF and strand bias (coverage threshold 10).
+11. **Filter**: identify positions with MAF at 0.1%, 0.5%, 1%, etc.
 
 Steps 6 to 11 were run twice, once on DCS reads and once on SSCS reads.
 
@@ -58,6 +58,7 @@ Steps 6 to 11 were run twice, once on DCS reads and once on SSCS reads.
 | Annotation | Variant Annotator (1.3.2) | MAF threshold 0, coverage 10, stranded counts |
 | Filter | Filter | `c16 >= 0.01`, 1 header line |
 
+Reason for difference from published results:
 The tutorial used BWA-MEM 0.7.18. The newer version is the most likely reason my DCS frequency (1.19%) differs slightly from the published one (1.26%).
 
 ## Results
