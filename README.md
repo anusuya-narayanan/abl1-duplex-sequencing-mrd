@@ -26,7 +26,7 @@ The data is a deep, targeted sequencing run of the ABL1 gene region on chromosom
 
 ## Workflow
 
-![Workflow](figures/workflow.png)
+![Workflow](Figures/Workflow.PNG)
 
 1. **FastQC**: reads the FASTQ file and performs a quality check.
 2. **Du Novo: Make families**: split the 12 bp tag off each read, join the two tags into a 24 bp barcode, then group reads by molecule and label each strand as "ab" or "ba", to distinguish the top and bottom strand.
