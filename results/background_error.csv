@@ -1,0 +1,3 @@
+consensus,positions,positions_with_noise,noise_reads,bases_read,noise_per_base
+DCS,1639,75,76,2546462,2.98E-05
+SSCS,1891,964,1519,13811156,1.10E-04

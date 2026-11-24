@@ -1,0 +1,5 @@
+consensus,step,galaxy_dataset,read_pairs
+DCS,Make consensus reads,11,23169
+DCS,Sequence Content Trimmer,15,23069
+SSCS,Make consensus reads,13,121359
+SSCS,Sequence Content Trimmer,22,119689

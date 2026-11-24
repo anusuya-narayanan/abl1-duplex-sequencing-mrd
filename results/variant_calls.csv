@@ -1,1 +1,5 @@
-Add data section
+consensus,chrom,pos,ref_major,alt_minor,alt_reads,depth,maf
+DCS,chr9,130872141,G,A,15,1259,0.01191
+DCS,chr9,130880141,A,G,679,1408,0.48224
+SSCS,chr9,130872141,G,A,71,7083,0.01002
+SSCS,chr9,130880141,A,G,3634,7533,0.48241

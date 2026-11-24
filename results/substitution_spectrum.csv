@@ -1,0 +1,13 @@
+consensus,class,noise_reads,per_100k_bases
+DCS,C>A / G>T,11,0.432
+DCS,C>G / G>C,6,0.236
+DCS,C>T / G>A,39,1.532
+DCS,T>A / A>T,16,0.628
+DCS,T>C / A>G,2,0.079
+DCS,T>G / A>C,2,0.079
+SSCS,C>A / G>T,696,5.039
+SSCS,C>G / G>C,51,0.369
+SSCS,C>T / G>A,494,3.577
+SSCS,T>A / A>T,133,0.963
+SSCS,T>C / A>G,90,0.652
+SSCS,T>G / A>C,55,0.398
