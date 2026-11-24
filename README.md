@@ -63,7 +63,7 @@ The tutorial used BWA-MEM 0.7.18. The newer version is the most likely reason my
 
 ## Results
 
-### 1. Variant calls at the tutorial cut-off (MAF â¥ 1%)
+### 1. Variant calls at the tutorial cut-off (MAF ≥ 1%)
 
 | Site (hg38) | Change | DCS | SSCS |
 |---|---|---|---|
