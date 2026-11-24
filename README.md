@@ -83,7 +83,7 @@ All minor-allele reads left after removing the two real sites:
 | C>A / G>T noise per base | 4.3 Ã 10â»â¶ | 5.0 Ã 10â»âµ |
 | C>T / G>A noise per base | 1.5 Ã 10â»âµ | 3.6 Ã 10â»âµ |
 
-![Background noise by substitution type](figures/error_spectrum.png)
+![Background noise by substitution type](Figures/Substitution_Error.PNG)
 
 C>A / G>T changes make up 46% of SSCS noise. This is the typical signature of 8-oxoguanine, oxidative damage to one strand during sample preparation. Because it sits on one strand only, the duplex step removes it almost entirely. C>T / G>A (deamination-type) changes are reduced only about 2-fold and form the largest share of what remains in DCS. Damage or end-repair artefacts copied onto both strands, and real variants present in a single molecule, look like this.
 
@@ -101,7 +101,7 @@ Sites passing each MAF cut-off (Filter on column 16):
 | 0.001 | 8 | 3 |
 | 0.0005 | 44 | 47 |
 
-![Threshold sweep](figures/threshold_sweep.png)
+![Threshold sweep](Figures/Threshold_sweep.PNG)
 
 At 0.1% to 0.3%, DCS passes *more* sites than SSCS. This is a depth effect, not extra noise. Every extra DCS site is a single duplex read at a position with fewer than 1,000 reads, where one read is already 0.1% to 0.3%. SSCS has about five times the depth, so its single noise reads stay below the cut-off. Adding a minimum of 3 supporting reads removes these: DCS then calls only the two real sites at every cut-off from 0.0005 to 0.01, while SSCS, with no MAF cut-off, still has 126 sites with 3 or more supporting reads.
 
