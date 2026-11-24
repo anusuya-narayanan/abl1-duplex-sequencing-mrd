@@ -53,13 +53,13 @@ Steps 6 to 11 were run twice, once on DCS reads and once on SSCS reads.
 | Consensus | Du Novo: Make consensus reads (3.0.2) | min reads 3, threshold 0.7, SSCS output on |
 | Trimming | Sequence Content Trimmer (0.2.3) | ACGT inverted, frequency 0.2, window 10, min length 50 |
 | Mapping | BWA-MEM (0.7.19) | hg38 |
-| Indel normalisation | BamLeftAlign (FreeBayes 1.3.8) | hg38 |
+| Indel normalisation | BamLeftAlign (1.3.10) | hg38 |
 | Base counting | Naive Variant Caller (0.0.4) | chr9, MAPQ 20, base quality 0, ploidy 1 |
 | Annotation | Variant Annotator (1.3.2) | MAF threshold 0, coverage 10, stranded counts |
 | Filter | Filter | `c16 >= 0.01`, 1 header line |
 
 Reason for difference from published results:
-The tutorial used BWA-MEM 0.7.18. The newer version is the most likely reason my DCS frequency (1.19%) differs slightly from the published one (1.26%).
+The tutorial used BWA-MEM 0.7.18 and BamLeftAlign 1.3.8; my run used BWA-MEM 0.7.19 and BamLeftAlign 1.3.10. The newer versions are the most likely reason my DCS frequency (1.19%) differs slightly from the published one (1.26%).
 
 ## Results
 
