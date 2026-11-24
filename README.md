@@ -9,7 +9,7 @@ Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncolo
 
 # Key Results (check again)
 - **Reproduced the published call.** The rare ABL1 variant chr9:130,872,141 G>A was detected at **1.19%** in duplex reads (15 of 1,259 molecules), against 1.26% in the tutorial. The heterozygous germline SNP rs2227985 sat at 48.2%, as expected.
-- **Duplex consensus cut background noise 3.7-fold** (3.0 Ã 10â»âµ vs 1.1 Ã 10â»â´ noise reads per base) and **oxidative-damage noise (C>A / G>T) about 12-fold.**
+- **Duplex consensus cut background noise 3.7-fold** (3.0 × 10⁻⁵ vs 1.1 × 10⁻⁴ noise reads per base) and **oxidative-damage noise (C>A / G>T) about 12-fold.**
 - **The cost is depth.** Requiring both strands left 5.2 times fewer reads (23,169 vs 121,359 read pairs; median depth 1,572 vs 7,476).
 - **A MAF cut-off alone is misleading below 0.5%.** At low depth, a single read already exceeds 0.1%, so a minimum number of supporting reads is needed alongside the MAF cut-off.
 
@@ -79,9 +79,9 @@ All minor-allele reads left after removing the two real sites:
 | Measure | DCS | SSCS |
 |---|---|---|
 | Positions with at least one noise read | 75 of 1,639 (5%) | 964 of 1,891 (51%) |
-| Noise reads per base | 3.0 Ã 10â»âµ | 1.1 Ã 10â»â´ |
-| C>A / G>T noise per base | 4.3 Ã 10â»â¶ | 5.0 Ã 10â»âµ |
-| C>T / G>A noise per base | 1.5 Ã 10â»âµ | 3.6 Ã 10â»âµ |
+| Noise reads per base | 	3.0 × 10⁻⁵ | 1.1 × 10⁻⁴ |
+| C>A / G>T noise per base | 	4.3 × 10⁻⁶ | 5.0 × 10⁻⁵ |
+| C>T / G>A noise per base | 1.5 × 10⁻⁵ | 3.6 × 10⁻⁵ |
 
 ![Background noise by substitution type](Figures/Substitution_Error.PNG)
 
@@ -115,7 +115,7 @@ At 0.1% to 0.3%, DCS passes *more* sites than SSCS. This is a depth effect, not 
 
 - **One sample, one small target.** A single public dataset over a few kilobases of ABL1. The noise figures describe this library, not duplex sequencing in general.
 - **No truth set below 1%.** Without known spiked-in variants, sites below 1% can't be scored as true or false positives. The next step is an in-silico dilution series with variants added at known frequencies.
-- **Molecules, not cells.** MAF counts DNA molecules. Converting to a fraction of cells needs copy-number information (for a heterozygous change, 1% of molecules â 2% of cells).
+- **Molecules, not cells.** MAF counts DNA molecules. Converting to a fraction of cells needs copy-number information (for a heterozygous change, 1% of molecules ≈ 2% of cells).
 - **Single-base changes only.** Indels were not analysed.
 - **Coverage threshold.** The Variant Annotator drops positions with fewer than 10 reads, which most likely explains the 252 positions reported for SSCS but not DCS.
 
@@ -123,7 +123,7 @@ At 0.1% to 0.3%, DCS passes *more* sites than SSCS. This is a depth effect, not 
 
 | Path | What it holds |
 |---|---|
-| `results/variant_calls.csv` | Sites passing MAF â¥ 0.01, both methods |
+| `results/variant_calls.csv` | Sites passing MAF ≥ 0.01, both methods |
 | `results/threshold_sweep.csv` | Sites passing each MAF cut-off |
 | `results/background_error.csv` | Noise reads per base, both methods |
 | `results/substitution_spectrum.csv` | Noise by substitution class |
