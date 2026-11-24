@@ -32,7 +32,7 @@ The data is a deep, targeted sequencing run of the ABL1 gene region on chromosom
 2. **Du Novo: Make families**: split the 12 bp tag off each read, join the two tags into a 24 bp barcode, then group reads by molecule and label each strand as "ab" or "ba", to distinguish the top and bottom strand.
 3. **Correct barcodes**: finds barcodes that differ by only a few letters and are probably the same molecule, then merges them. Setting used: maximum differences 3
 4. **Align families**: runs a multiple sequence alignment (Kalign2) within each family, so that the same position lines up in the same column before voting.
-5. **Make consensus reads (SSCS and DSC)**: removes errors that hit only a few reads, such as most sequencer errors and late PCR errors. Single-strand consensus per strand (min 3 reads, 70% agreement); and duplex consensus where both strands disagree become N.
+5. **Make consensus reads (SSCS and DCS)**: removes errors that hit only a few reads, such as most sequencer errors and late PCR errors. Single-strand consensus per strand (min 3 reads, 70% agreement); and duplex consensus where both strands disagree become N.
 6. **Sequence Content Trimmer**: removes reads with too many Ns. Setting used: 10 bp window, more than 2 non-ACGT bases; drop pairs shorter than 50 bp.
 7. **BWA-MEM**: map consensus reads to the reference human genome hg38. 
 8. **BamLeftAlign**: standardise indel positions, moves it to the leftmost possible position.
