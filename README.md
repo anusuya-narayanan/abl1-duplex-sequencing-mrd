@@ -1,13 +1,13 @@
-# Detection of a 1% ABL1 variant and measuring error suppression
+# Detecting a 1% ABL1 variant and measuring error suppression
 
 This is a dry-lab NGS project run in [Galaxy](https://usegalaxy.org). It reproduces the Galaxy Training Network tutorial [Calling very rare variants](https://training.galaxyproject.org/training-material/topics/variant-analysis/tutorials/dunovo/tutorial.html), then extends it with my own analysis. I compare duplex consensus (DCS) and single-strand consensus (SSCS) reads to measure how much background noise duplex sequencing removes, and where variant calling at low allele frequencies breaks down.
 
-# Author and Motivation
-Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncology. My direct laboratory experience is centered on DNA-FISH and imaging-based cytogenomics. To build on this foundation, I am developing foundational NGS data-analysis skills through this Galaxy-based project, and I am eager to extend my experience in assay development and image analysis into NGS and multi-omics. 
+## Author and Motivation
+Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncology. My direct laboratory experience is centred on DNA-FISH, imaging-based cytogenomics and flow-cytometry. To build on this foundation, I am developing foundational NGS data-analysis skills through this Galaxy-based project, and I am eager to extend my experience in assay development and image analysis into NGS and multi-omics. 
 
 *Personal learning project using public data and open-source tools, done in my own time. Not affiliated with or endorsed by any employer.*
 
-# Key Results (check again)
+## Key Results
 - **Reproduced the published call.** The rare ABL1 variant chr9:130,872,141 G>A was detected at **1.19%** in duplex reads (15 of 1,259 molecules), against 1.26% in the tutorial. The heterozygous germline SNP rs2227985 sat at 48.2%, as expected.
 - **Duplex consensus cut background noise 3.7-fold** (3.0 × 10⁻⁵ vs 1.1 × 10⁻⁴ noise reads per base) and **oxidative-damage noise (C>A / G>T) about 12-fold.**
 - **The cost is depth.** Requiring both strands left 5.2 times fewer reads (23,169 vs 121,359 read pairs; median depth 1,572 vs 7,476).
@@ -20,9 +20,9 @@ Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncolo
 | Sample | ABL1 duplex sequencing library from Schmitt et al. (2015), [PMC4414912](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4414912/) |
 | Accession | SRA [SRR1799908](https://www.ncbi.nlm.nih.gov/sra/?term=SRR1799908), paired-end |
 | Reference | Human hg38, chr9 |
-| Galaxy server | usegalaxy.org (Galaxy Main) |
+| Galaxy server | Galaxy History (https://galaxy-main.usegalaxy.org/u/narayanan.anusuya/h/calling-variants-dsc) |
 
-The data is a deep, targeted sequencing run of the ABL1 gene region on chromosome 9, from Schmitt et al. (2015), SRA accession SRR1799908. Eery original DNA molecule carries a random barcode of 12bp tag, so reads can be traced back to the molecule and the strand they came from. Du Novo joins the two 12-letter tags into a 24-letter barcode, then uses the tag order to label each read
+The data is a deep, targeted sequencing run of the ABL1 gene region on chromosome 9, from Schmitt et al. (2015), SRA accession SRR1799908. Every original DNA molecule carries a random barcode of 12bp tag, so reads can be traced back to the molecule and the strand they came from. Du Novo joins the two 12-letter tags into a 24-letter barcode, then uses the tag order to label each read as coming from one strand or the other.
 
 ## Workflow
 
@@ -32,13 +32,13 @@ The data is a deep, targeted sequencing run of the ABL1 gene region on chromosom
 2. **Du Novo: Make families**: split the 12 bp tag off each read, join the two tags into a 24 bp barcode, then group reads by molecule and label each strand as "ab" or "ba", to distinguish the top and bottom strand.
 3. **Correct barcodes**: finds barcodes that differ by only a few letters and are probably the same molecule, then merges them. Setting used: maximum differences 3
 4. **Align families**: runs a multiple sequence alignment (Kalign2) within each family, so that the same position lines up in the same column before voting.
-5. **Make consensus reads (SSCS and DCS)**: removes errors that hit only a few reads, such as most sequencer errors and late PCR errors. Single-strand consensus per strand (min 3 reads, 70% agreement); and duplex consensus where both strands disagree become N.
+5. **Make consensus reads (SSCS and DCS)**: removes errors that hit only a few reads, such as most sequencer errors and late PCR errors. Single-strand consensus per strand (min 3 reads, 70% agreement); and duplex consensus where positions on which both strands disagree become N.
 6. **Sequence Content Trimmer**: removes reads with too many Ns. Setting used: 10 bp window, more than 2 non-ACGT bases; drop pairs shorter than 50 bp.
 7. **BWA-MEM**: map consensus reads to the reference human genome hg38. 
 8. **BamLeftAlign**: standardise indel positions, moves it to the leftmost possible position.
 9. **Naive Variant Caller**: count bases at each chr9 position. It is “naive” because it makes no assumption about how many copies of a chromosome a cell has. Setting used: min mapping quality 20, min base quality 0, ploidy 1.
-10. **Variant Annotator**: turns the VCF into a table with per-position depth, major/minor allele, MAF and strand bias (coverage threshold 10).
-11. **Filter**: identify positions with MAF at 0.1%, 0.5%, 1%, etc.
+10. **Variant Annotator**: turns the VCF into a table with per-position depth, major/minor allele, MAF and strand bias (keeps positions with at least 10 reads in each read direction).
+11. **Filter**: keeps positions with MAF at or above a cut-off (1% as in the tutorial, 0.005%- 2% in the sweep)
 
 Steps 6 to 11 were run twice, once on DCS reads and once on SSCS reads.
 
@@ -47,7 +47,7 @@ Steps 6 to 11 were run twice, once on DCS reads and once on SSCS reads.
 | Step | Tool (version) | Key settings |
 |---|---|---|
 | Quality check | FastQC (0.74+galaxy1) | defaults |
-| Families | Du Novo: Make families (3.0.2) | tag length 12 |
+| Families | Du Novo: Make families (3.0.2) | tag length 12, invariant length 5 |
 | Barcode correction | Du Novo: Correct barcodes (3.0.2) | max differences 3 |
 | Family alignment | Du Novo: Align families (3.0.2) | Kalign2 |
 | Consensus | Du Novo: Make consensus reads (3.0.2) | min reads 3, threshold 0.7, SSCS output on |
@@ -55,7 +55,7 @@ Steps 6 to 11 were run twice, once on DCS reads and once on SSCS reads.
 | Mapping | BWA-MEM (0.7.19) | hg38 |
 | Indel normalisation | BamLeftAlign (1.3.10) | hg38 |
 | Base counting | Naive Variant Caller (0.0.4) | chr9, MAPQ 20, base quality 0, ploidy 1 |
-| Annotation | Variant Annotator (1.3.2) | MAF threshold 0, coverage 10, stranded counts |
+| Annotation | Variant Annotator (1.3.2) | MAF threshold 0, coverage 10, stranded counts on |
 | Filter | Filter | `c16 >= 0.01`, 1 header line |
 
 Reason for difference from published results:
@@ -96,7 +96,6 @@ Sites passing each MAF cut-off (Filter on column 16):
 | 0.02 | 1 | 1 |
 | 0.01 | 2 | 2 |
 | 0.005 | 2 | 2 |
-| 0.003 | 4 | 2 |
 | 0.002 | 4 | 2 |
 | 0.001 | 8 | 3 |
 | 0.0005 | 44 | 47 |
@@ -128,21 +127,13 @@ At 0.1% to 0.3%, DCS passes *more* sites than SSCS. This is a depth effect, not 
 | `results/background_error.csv` | Noise reads per base, both methods |
 | `results/substitution_spectrum.csv` | Noise by substitution class |
 | `results/read_counts.csv` | Consensus read pairs before and after trimming |
-| `figures/` | Plots used above |
-| `scripts/duplex_sweep.py` | Rebuilds every table and figure from the two Variant Annotator tables |
-| `data/` | Where to put the Variant Annotator tables exported from Galaxy (see `data/README.md`) |
-
-## Reproduce the analysis
-
-```bash
-pip install -r requirements.txt
-python scripts/duplex_sweep.py \
-    --dcs data/dcs_variant_annotator.tsv \
-    --sscs data/sscs_variant_annotator.tsv \
-    --min-reads 3
-```
+| `Figures/` | Plots used above |
+| `scripts/duplex_sweep.py` | Rebuilds the results tables |
 
 This writes the CSVs to `results/` and the plots to `figures/`. With `--min-reads`, the threshold-sweep figure gains a second panel showing the cut-off combined with a minimum number of supporting reads.
+
+## Disclaimer
+Galaxy analyses were run and checked by me. Drafting of the README and figures was assisted by Claude (Anthropic).
 
 ## References
 
