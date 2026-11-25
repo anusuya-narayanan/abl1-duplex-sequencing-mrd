@@ -3,7 +3,7 @@
 This is a dry-lab NGS project run in [Galaxy](https://usegalaxy.org). It reproduces the Galaxy Training Network tutorial [Calling very rare variants](https://training.galaxyproject.org/training-material/topics/variant-analysis/tutorials/dunovo/tutorial.html), then extends it with my own analysis. I compare duplex consensus (DCS) and single-strand consensus (SSCS) reads to measure how much background noise duplex sequencing removes, and where variant calling at low allele frequencies breaks down.
 
 ## Author and Motivation
-Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncology. My direct laboratory experience is centred on DNA-FISH, imaging-based cytogenomics and flow-cytometry. To build on this foundation, I am developing foundational NGS data-analysis skills through this Galaxy-based project, and I am eager to extend my experience in assay development and image analysis into NGS and multi-omics. 
+Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncology. My direct laboratory experience is centred on DNA-FISH, imaging-based cytogenomics and flow-cytometry. To build on this foundation, I am developing NGS data-analysis skills through this Galaxy-based project, and I am eager to extend my experience in assay development and image analysis into NGS and multi-omics. 
 
 *Personal learning project using public data and open-source tools, done in my own time. Not affiliated with or endorsed by any employer.*
 
@@ -38,7 +38,7 @@ The data is a deep, targeted sequencing run of the ABL1 gene region on chromosom
 8. **BamLeftAlign**: standardise indel positions, moves it to the leftmost possible position.
 9. **Naive Variant Caller**: count bases at each chr9 position. It is “naive” because it makes no assumption about how many copies of a chromosome a cell has. Setting used: min mapping quality 20, min base quality 0, ploidy 1.
 10. **Variant Annotator**: turns the VCF into a table with per-position depth, major/minor allele, MAF and strand bias (keeps positions with at least 10 reads in each read direction).
-11. **Filter**: keeps positions with MAF at or above a cut-off (1% as in the tutorial, 0.005%- 2% in the sweep)
+11. **Filter**: keeps positions with MAF at or above a cut-off (1% as in the tutorial, 0.05%- 2% in the sweep)
 
 Steps 6 to 11 were run twice, once on DCS reads and once on SSCS reads.
 
@@ -102,7 +102,7 @@ Sites passing each MAF cut-off (Filter on column 16):
 
 ![Threshold sweep](Figures/threshold_sweep.PNG)
 
-At 0.1% to 0.3%, DCS passes *more* sites than SSCS. This is a depth effect, not extra noise. Every extra DCS site is a single duplex read at a position with fewer than 1,000 reads, where one read is already 0.1% to 0.3%. SSCS has about five times the depth, so its single noise reads stay below the cut-off. Adding a minimum of 3 supporting reads removes these: DCS then calls only the two real sites at every cut-off from 0.0005 to 0.01, while SSCS, with no MAF cut-off, still has 126 sites with 3 or more supporting reads.
+At 0.1% to 0.2%, DCS passes *more* sites than SSCS. This is a depth effect, not extra noise. Every extra DCS site is a single duplex read at a position with fewer than 1,000 reads, where one read is already 0.1% to 0.2%. SSCS has about five times the depth, so its single noise reads stay below the cut-off. Adding a minimum of 3 supporting reads removes these: DCS then calls only the two real sites at every cut-off from 0.0005 to 0.01, while SSCS, with no MAF cut-off, still has 126 sites with 3 or more supporting reads.
 
 ## Conclusions
 
@@ -116,7 +116,7 @@ At 0.1% to 0.3%, DCS passes *more* sites than SSCS. This is a depth effect, not 
 - **No truth set below 1%.** Without known spiked-in variants, sites below 1% can't be scored as true or false positives. The next step is an in-silico dilution series with variants added at known frequencies.
 - **Molecules, not cells.** MAF counts DNA molecules. Converting to a fraction of cells needs copy-number information (for a heterozygous change, 1% of molecules ≈ 2% of cells).
 - **Single-base changes only.** Indels were not analysed.
-- **Coverage threshold.** The Variant Annotator drops positions with fewer than 10 reads, which most likely explains the 252 positions reported for SSCS but not DCS.
+- **Strand-direction coverage.** With stranded counts on, the Variant Annotator keeps only positions with at least 10 reads in each read direction. 252 positions near target edges pass in SSCS but not in DCS, where reads there run mostly in one direction.
 
 ## Repository contents
 
@@ -130,7 +130,6 @@ At 0.1% to 0.3%, DCS passes *more* sites than SSCS. This is a depth effect, not 
 | `Figures/` | Plots used above |
 | `scripts/duplex_sweep.py` | Rebuilds the results tables |
 
-This writes the CSVs to `results/` and the plots to `figures/`. With `--min-reads`, the threshold-sweep figure gains a second panel showing the cut-off combined with a minimum number of supporting reads.
 
 ## Disclaimer
 Galaxy analyses were run and checked by me. Drafting of the README and figures was assisted by Claude (Anthropic).
