@@ -102,7 +102,7 @@ Sites passing each MAF cut-off (Filter on column 16):
 
 ![Threshold sweep](Figures/threshold_sweep.PNG)
 
-At 0.1% to 0.2%, DCS passes *more* sites than SSCS. This is a depth effect, not extra noise. Every extra DCS site is a single duplex read at a position with fewer than 1,000 reads, where one read is already 0.1% to 0.2%. SSCS has about five times the depth, so its single noise reads stay below the cut-off. Adding a minimum of 3 supporting reads removes these: DCS then calls only the two real sites at every cut-off from 0.0005 to 0.01, while SSCS, with no MAF cut-off, still has 126 sites with 3 or more supporting reads.
+At 0.1% to 0.2%, DCS passes *more* sites than SSCS. This is a depth effect, not extra noise. Every extra DCS site is a single duplex read at a position with fewer than 1,000 reads, where one read is already 0.1% to 0.3%. SSCS has about five times the depth, so its single noise reads stay below the cut-off. Adding a minimum of 3 supporting reads removes these: DCS then calls only the two real sites at every cut-off from 0.0005 to 0.01, while SSCS, with no MAF cut-off, still has 126 sites with 3 or more supporting reads.
 
 ## Conclusions
 
@@ -129,6 +129,7 @@ At 0.1% to 0.2%, DCS passes *more* sites than SSCS. This is a depth effect, not 
 | `results/read_counts.csv` | Consensus read pairs before and after trimming |
 | `Figures/` | Plots used above |
 | `scripts/duplex_sweep.py` | Rebuilds the results tables |
+| `data/` | Variant Annotator tables exported from Galaxy (datasets 20 and 27), used to calculate the results tables |
 
 
 ## Acknowledgement
