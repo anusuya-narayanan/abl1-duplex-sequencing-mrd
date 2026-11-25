@@ -131,7 +131,7 @@ At 0.1% to 0.2%, DCS passes *more* sites than SSCS. This is a depth effect, not 
 | `scripts/duplex_sweep.py` | Rebuilds the results tables |
 
 
-## Disclaimer
+## Acknowledgement
 Galaxy analyses were run and checked by me. Drafting of the README and figures was assisted by Claude (Anthropic).
 
 ## References
