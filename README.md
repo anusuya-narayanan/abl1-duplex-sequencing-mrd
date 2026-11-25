@@ -20,7 +20,7 @@ Anusuya Narayanan, an assay development scientist in DNA-FISH for haemato-oncolo
 | Sample | ABL1 duplex sequencing library from Schmitt et al. (2015), [PMC4414912](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4414912/) |
 | Accession | SRA [SRR1799908](https://www.ncbi.nlm.nih.gov/sra/?term=SRR1799908), paired-end |
 | Reference | Human hg38, chr9 |
-| Galaxy server | Galaxy History (https://galaxy-main.usegalaxy.org/u/narayanan.anusuya/h/calling-variants-dsc) |
+| Galaxy server | Galaxy History (https://galaxy-main.usegalaxy.org/u/narayanan.anusuya/h/calling-variants-dsc-1) |
 
 The data is a deep, targeted sequencing run of the ABL1 gene region on chromosome 9, from Schmitt et al. (2015), SRA accession SRR1799908. Every original DNA molecule carries a random barcode of 12bp tag, so reads can be traced back to the molecule and the strand they came from. Du Novo joins the two 12-letter tags into a 24-letter barcode, then uses the tag order to label each read as coming from one strand or the other.
 
